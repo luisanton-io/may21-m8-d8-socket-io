@@ -7,9 +7,15 @@ import { Server } from 'socket.io'
 // We need to create our express app config and pass it to a standard Node.js HTTP server
 // This server will be used to initialize our socket.io server.
 
+let onlineUsers = []
+
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+app.get('/online-users', (req, res) => {
+    res.status(200).send({ onlineUsers })
+})
 
 const httpServer = createServer(app)
 
@@ -20,13 +26,34 @@ const io = new Server(httpServer, { allowEIO3: true })
 io.on('connection', socket => {
     console.log(socket.id)
 
-    socket.on('message', ({ message }) => {
-        console.log(message)
+    //#region
+    // socket.on('message', ({ message }) => {
+    //     console.log(message)
+    // })
+
+    // socket.on("loggedIn", (payload) => {
+    //     socket.emit('welcome', { message: "Welcome" })
+    //     socket.broadcast.emit("newOnlineUser", { id: socket.id })
+    // })
+    //#endregion
+
+    socket.on("setUsername", ({ username }) => {
+        console.log(username)
+
+        onlineUsers.push({ username, id: socket.id })
+
+        socket.emit("loggedin")
+        socket.broadcast.emit("newConnection")
     })
 
-    socket.on("loggedIn", (payload) => {
-        socket.emit('welcome', { message: "Welcome" })
-        socket.broadcast.emit("newOnlineUser", { id: socket.id })
+    socket.on("sendmessage", (message) => {
+        // const { text, sender, id, timestamp } = message
+
+        // ... we should save the message to the database here...
+
+        // ... and then broadcast the message to the recipient(s)
+        socket.broadcast.emit("message", message)
+
     })
 
 
