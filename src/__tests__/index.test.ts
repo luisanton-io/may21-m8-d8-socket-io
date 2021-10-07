@@ -1,7 +1,7 @@
-import supertest from "supertest"
-import app from "../app";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
-import dotenv from "dotenv"
+import supertest from "supertest";
+import app from "../app";
 
 dotenv.config()
 
@@ -11,7 +11,6 @@ describe("Testing env", () => {
     it("should test that true is true", () => {
         expect(true).toBeTruthy();
     })
-
 })
 
 describe("Testing endpoints", () => {
