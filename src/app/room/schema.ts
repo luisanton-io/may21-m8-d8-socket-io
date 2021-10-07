@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import MessageSchema from '../message/schema.js';
+import MessageSchema from '../message/schema';
 
 const RoomSchema = new mongoose.Schema({
     name: { type: String, required: true },
